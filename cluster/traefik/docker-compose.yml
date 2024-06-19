@@ -14,7 +14,7 @@ services:
     command:
       # docker swarm
       - --providers.docker=true
-      - --providers.docker.swarmMode=true
+      - --providers.swarm.endpoint=tcp://127.0.0.1:2377
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=public
 
