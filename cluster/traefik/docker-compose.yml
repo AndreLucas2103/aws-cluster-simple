@@ -28,7 +28,7 @@ services:
       - --api
       - --api.debug=true
       - --api.dashboard=true
-      #- --api.insecure=true Desativado para testar se funciona corretamente com seguranca
+      - --api.insecure=true
 
       # letsencrypt, geracao de certificados
       - --certificatesresolvers.leresolver.acme.email=p4n1c0021@gmail.com
