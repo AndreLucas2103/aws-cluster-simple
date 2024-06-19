@@ -9,7 +9,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - public
-      - agent_network
     deploy:
       mode: replicated
       replicas: 1
@@ -42,7 +41,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - agent_network
+      - public
     deploy:
       mode: global
       placement:
@@ -50,8 +49,6 @@ services:
 
 networks:
   public:
-    external: true
-  agent_network:
     external: true
 
 volumes:

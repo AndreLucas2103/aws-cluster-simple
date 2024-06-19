@@ -62,5 +62,4 @@ volumes:
 
 networks:
   public:
-    driver: overlay
-    attachable: true
+    external: true
