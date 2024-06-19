@@ -10,7 +10,7 @@ services:
       - public
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt/acme.json:/letsencrypt"
+      - "letsencrypt:/letsencrypt"
     command:
       # docker swarm
       - "--providers.docker=true"
@@ -29,7 +29,7 @@ services:
       - "--api"
       - "--api.debug=true"
       - "--api.dashboard=true"
-      - "--api.insecure=true"
+      # - "--api.insecure=true"
 
       # letsencrypt, geracao de certificados
       - "--certificatesresolvers.leresolver.acme.email=p4n1c0021@gmail.com"
@@ -55,7 +55,10 @@ services:
         - "traefik.http.routers.traefik.tls=true"
         - "traefik.http.routers.traefik.tls.certresolver=leresolver"
         - "traefik.http.routers.traefik.service=api@internal"
-        - "traefik.http.services.api.loadbalancer.server.port=8080"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+volumes:
+  letsencrypt:
 
 networks:
   public:
