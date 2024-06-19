@@ -13,32 +13,33 @@ services:
       - "./letsencrypt/acme.json:/letsencrypt"
     command:
       # docker swarm
-      - --providers.docker=true
-      - --providers.swarm.endpoint=tcp://127.0.0.1:2377
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=public
+      - "--providers.docker=true"
+      - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=public"
 
       # portas e redirecionamento
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.web.http.redirections.entryPoint.to=websecured
-      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.http.tls=true"
 
       # ativacao de api e dashboard
-      - --api
-      - --api.debug=true
-      - --api.dashboard=true
-      - --api.insecure=true
+      - "--api"
+      - "--api.debug=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
 
       # letsencrypt, geracao de certificados
-      - --certificatesresolvers.leresolver.acme.email=p4n1c0021@gmail.com
-      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.leresolver.acme.tlschallenge=true
-      - --certificatesresolvers.leresolver.acme.httpChallenge=true
-      - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web
+      - "--certificatesresolvers.leresolver.acme.email=p4n1c0021@gmail.com"
+      - "--certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.leresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.leresolver.acme.httpChallenge=true"
+      - "--certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web"
 
       # logs do traefik
-      - --log.level=ERROR
+      - "--log.level=ERROR"
     deploy:
       mode: replicated
       replicas: 1
@@ -49,12 +50,12 @@ services:
         condition: on-failure
         delay: 5s
       labels:
-        - traefik.enable=true
-        - traefik.http.routers.traefik.rule=Host(`traefik.cabral-andre-dev.site`)
-        - traefik.http.routers.traefik.tls=true
-        - traefik.http.routers.traefik.tls.certresolver=leresolver
-        - traefik.http.routers.traefik.service=api@internal
-        - traefik.http.services.api.loadbalancer.server.port=8080
+        - "traefik.enable=true"
+        - "traefik.http.routers.traefik.rule=Host(`traefik.cabral-andre-dev.site`)"
+        - "traefik.http.routers.traefik.tls=true"
+        - "traefik.http.routers.traefik.tls.certresolver=leresolver"
+        - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.services.api.loadbalancer.server.port=8080"
 
 networks:
   public:
