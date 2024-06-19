@@ -64,4 +64,3 @@ networks:
   public:
     driver: overlay
     attachable: true
-    name: public
