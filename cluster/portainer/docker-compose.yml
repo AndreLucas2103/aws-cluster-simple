@@ -16,6 +16,7 @@ services:
         constraints: [node.role == manager]
       labels:
         - "traefik.enable=true"
+        - "traefik.docker.network=public"
         - "traefik.http.routers.portainer.rule=Host(`portainer.cabral-andre-dev.site`)"
         - "traefik.http.routers.portainer.service=portainer"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
