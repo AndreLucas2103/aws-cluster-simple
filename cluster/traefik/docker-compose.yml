@@ -34,6 +34,7 @@ services:
       - --certificatesresolvers.leresolver.acme.email=p4n1c0021@gmail.com
       - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.leresolver.acme.tlschallenge=true
+      - --certificatesresolvers.leresolver.acme.httpChallenge=true
       - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web
 
       # logs do traefik
