@@ -10,7 +10,7 @@ services:
       - public
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt/acme.json:/letsencrypt/acme.json"
+      - "./letsencrypt/acme.json:/letsencrypt"
     command:
       # docker swarm
       - --providers.docker=true
@@ -50,7 +50,7 @@ services:
         delay: 5s
       labels:
         - traefik.enable=true
-        - traefik.http.routers.traefik.rule=Host(`13.58.42.254`)
+        - traefik.http.routers.traefik.rule=Host(`traefik.cabral-andre-dev.site`)
         - traefik.http.routers.traefik.tls=true
         - traefik.http.routers.traefik.tls.certresolver=leresolver
         - traefik.http.routers.traefik.service=api@internal
