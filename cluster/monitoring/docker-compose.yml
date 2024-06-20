@@ -31,6 +31,7 @@ services:
           - node.labels.monitoring == true
       labels:
         - "traefik.enable=true"
+        - "traefik.http.routers.clusterPrometheus.service=clusterPrometheus"
         - "traefik.http.routers.clusterPrometheus.rule=Host(`cluster-prometheus.cabral-andre-dev.site`)"
         - "traefik.http.services.clusterPrometheus.loadbalancer.server.port=9090"
         - "traefik.http.routers.clusterPrometheus.tls=true"
