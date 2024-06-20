@@ -1,0 +1,129 @@
+version: "3.2"
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  traefik_proxy:
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.49.1
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=error
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.monitoring == true
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.clusterPrometheus.rule=Host(`cluster-prometheus.cabral-andre-dev.site`)"
+        - "traefik.http.services.clusterPrometheus.loadbalancer.server.port=9090"
+        - "traefik.http.routers.clusterPrometheus.tls=true"
+        - "traefik.http.routers.clusterPrometheus.tls.certresolver=le"
+    networks:
+      - traefik_proxy
+
+  grafana:
+    image: grafana/grafana:10.3.3
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.monitoring == true
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.clusterGrafana.rule=Host(`cluster-grafana.cabral-andre-dev.site`)"
+        - "traefik.http.services.clusterGrafana.loadbalancer.server.port=3000"
+        - "traefik.http.routers.clusterGrafana.tls=true"
+        - "traefik.http.routers.clusterGrafana.tls.certresolver=le"
+    networks:
+      - traefik_proxy
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    command:
+      - "-docker_only=true"
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.clusterCadvisor.rule=Host(`cluster-cadvisor.cabral-andre-dev.site`)"
+        - "traefik.http.services.clusterCadvisor.loadbalancer.server.port=8080"
+        - "traefik.http.routers.clusterCadvisor.tls=true"
+        - "traefik.http.routers.clusterCadvisor.tls.certresolver=le"
+    networks:
+      - traefik_proxy
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    ports:
+      - 9100:9100
+    command:
+      - "--path.sysfs=/host/sys"
+      - "--path.procfs=/host/proc"
+      - "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)"
+      - "--no-collector.ipvs"
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.clusterNodeExporter.rule=Host(`cluster-node-exporter.cabral-andre-dev.site`)"
+        - "traefik.http.services.clusterNodeExporter.loadbalancer.server.port=9100"
+        - "traefik.http.routers.clusterNodeExporter.tls=true"
+        - "traefik.http.routers.clusterNodeExporter.tls.certresolver=le"
+    volumes:
+      - type: bind
+        source: /
+        target: /rootfs
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /host/proc
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /host/sys
+        read_only: true
+    networks:
+      - traefik_proxy

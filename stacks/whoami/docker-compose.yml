@@ -10,7 +10,6 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.whoami.rule=Host(`whoami.cabral-andre-dev.site`)"
-        - "traefik.http.routers.whoami.service=whoami"
         - "traefik.http.routers.whoami.entrypoints=websecure"
         - "traefik.http.routers.whoami.tls=true"
         - "traefik.http.routers.whoami.tls.certresolver=leresolver"
@@ -19,6 +18,3 @@ services:
 networks:
   traefik_proxy:
     external: true
-
-volumes:
-  data:

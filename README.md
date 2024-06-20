@@ -102,3 +102,51 @@ igikbrytkndykcb7xcapd8mdo     worker_2   Ready     Active                       
 Certifique que todos os nós (managers e workers) estejam listados
 
 ## Instalando Portainer e Traefik
+
+Todos os comandos serão realizados na maquina `cluster-manager-1`, execute o seguinte comando:
+
+```
+# cria uma rede para comunicação dos serviços
+docker network create -d overlay traefik_proxy
+```
+
+Nesse repositório temos duas pastas, `cluster` e `stacks`, a pasta cluster é destinada a todas as stacks que serão executadas dentro do próprio Docker Swarm e as stacks são arquivos docker-compose.yml que podem ser executadas dentro do Portainer posteriormente.
+
+####
+
+Acesse a pasta cluster/traefik e execute o seguinte comando
+
+```
+docker stack deploy traefik -c docker-compose.yml
+```
+
+Acesse a pasta cluster/portainer e execute o seguinte comando
+
+```
+docker stack deploy portainer -c docker-compose.yml
+```
+
+Execute o seguinte comando para verificar se todos os services estão funcionando
+
+```
+docker service ls
+```
+
+A saída deve ser parecida com:
+
+```
+ID             NAME                  MODE         REPLICAS   IMAGE                           PORTS
+hg4cfiz1ew23   portainer_agent       global       1/1        portainer/agent:2.20.3
+xuv9swxaybyp   portainer_portainer   replicated   1/1        portainer/portainer-ce:2.20.3
+495myk7anzuv   traefik_traefik       replicated   1/1        traefik:v3.0                    *:80->80/tcp, *:443->443/tcp
+```
+
+####
+
+Os dominios e subdominios utilizados devem ser apontados para o Traefik (o IP elástico criado no inicio), definido como tipo A, os certificados são gerados e renovados automáticamente pelo Let's Encrypt
+
+####
+
+Você já pode subir aplicações normalmente utilizando a interface do portainer
+
+## Monitoramento do Cluster e Docker Swarm
