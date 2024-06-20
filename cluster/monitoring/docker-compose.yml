@@ -34,7 +34,7 @@ services:
         - "traefik.http.routers.clusterPrometheus.rule=Host(`cluster-prometheus.cabral-andre-dev.site`)"
         - "traefik.http.services.clusterPrometheus.loadbalancer.server.port=9090"
         - "traefik.http.routers.clusterPrometheus.tls=true"
-        - "traefik.http.routers.clusterPrometheus.tls.certresolver=le"
+        - "traefik.http.routers.clusterPrometheus.tls.certresolver=leresolver"
     networks:
       - traefik_proxy
 
@@ -59,7 +59,7 @@ services:
         - "traefik.http.routers.clusterGrafana.rule=Host(`cluster-grafana.cabral-andre-dev.site`)"
         - "traefik.http.services.clusterGrafana.loadbalancer.server.port=3000"
         - "traefik.http.routers.clusterGrafana.tls=true"
-        - "traefik.http.routers.clusterGrafana.tls.certresolver=le"
+        - "traefik.http.routers.clusterGrafana.tls.certresolver=leresolver"
     networks:
       - traefik_proxy
 
@@ -86,7 +86,7 @@ services:
         - "traefik.http.routers.clusterCadvisor.rule=Host(`cluster-cadvisor.cabral-andre-dev.site`)"
         - "traefik.http.services.clusterCadvisor.loadbalancer.server.port=8080"
         - "traefik.http.routers.clusterCadvisor.tls=true"
-        - "traefik.http.routers.clusterCadvisor.tls.certresolver=le"
+        - "traefik.http.routers.clusterCadvisor.tls.certresolver=leresolver"
     networks:
       - traefik_proxy
 
@@ -111,7 +111,7 @@ services:
         - "traefik.http.routers.clusterNodeExporter.rule=Host(`cluster-node-exporter.cabral-andre-dev.site`)"
         - "traefik.http.services.clusterNodeExporter.loadbalancer.server.port=9100"
         - "traefik.http.routers.clusterNodeExporter.tls=true"
-        - "traefik.http.routers.clusterNodeExporter.tls.certresolver=le"
+        - "traefik.http.routers.clusterNodeExporter.tls.certresolver=leresolver"
     volumes:
       - type: bind
         source: /
