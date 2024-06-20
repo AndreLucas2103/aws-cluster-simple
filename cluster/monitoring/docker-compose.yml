@@ -11,6 +11,9 @@ networks:
 services:
   prometheus:
     image: prom/prometheus:v2.49.1
+    depends_on:
+      - cadvisor
+      - node-exporter
     ports:
       - "9090:9090"
     command:
