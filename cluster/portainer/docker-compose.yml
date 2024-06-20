@@ -7,7 +7,7 @@ services:
     volumes:
       - data:/data
     networks:
-      - public
+      - traefik-proxy
     deploy:
       mode: replicated
       replicas: 1
@@ -15,18 +15,12 @@ services:
         constraints: [node.role == manager]
       labels:
         - "traefik.enable=true"
-        - "traefik.docker.network=public"
-        - "traefik.http.routers.portainer.rule=Host(`portainer.cabral-andre-dev.site`)"
         - "traefik.http.routers.portainer.service=portainer"
-        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+        - "traefik.http.routers.portainer.rule=Host(`portainer.cabral-andre-dev.site`)"
+        - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls=true"
         - "traefik.http.routers.portainer.tls.certresolver=leresolver"
-        # Edge
-        - "traefik.http.routers.edge.rule=Host(`edge.cabral-andre-dev.site`)"
-        - "traefik.http.routers.edge.service=edge"
-        - "traefik.http.services.edge.loadbalancer.server.port=8000"
-        - "traefik.http.routers.edge.tls=true"
-        - "traefik.http.routers.edge.tls.certresolver=leresolver"
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
   agent:
     image: portainer/agent:2.20.3
@@ -40,14 +34,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - public
+      - traefik-proxy
     deploy:
       mode: global
       placement:
         constraints: [node.platform.os == linux]
+      labels:
+        - "traefik.enable=false"
 
 networks:
-  public:
+  traefik-proxy:
     external: true
 
 volumes:

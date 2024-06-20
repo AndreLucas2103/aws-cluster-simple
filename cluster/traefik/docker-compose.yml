@@ -7,7 +7,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - public
+      - traefik-proxy
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "letsencrypt:/letsencrypt"
@@ -16,7 +16,7 @@ services:
       - "--providers.docker=true"
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=public"
+      - "--providers.docker.network=traefik-proxy"
 
       # portas e redirecionamento
       - "--entrypoints.web.address=:80"
@@ -52,14 +52,15 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.traefik.rule=Host(`traefik.cabral-andre-dev.site`)"
+        - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.routers.traefik.entrypoints=websecure"
         - "traefik.http.routers.traefik.tls=true"
         - "traefik.http.routers.traefik.tls.certresolver=leresolver"
-        - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 volumes:
   letsencrypt:
 
 networks:
-  public:
+  traefik-proxy:
     external: true

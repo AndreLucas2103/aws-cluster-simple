@@ -1,0 +1,24 @@
+version: "3.2"
+
+services:
+  whoami:
+    image: "traefik/whoami"
+    networks:
+      - traefik-proxy
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.whoami.rule=Host(`whoami.cabral-andre-dev.site`)"
+        - "traefik.http.routers.whoami.service=whoami"
+        - "traefik.http.routers.whoami.entrypoints=websecure"
+        - "traefik.http.routers.whoami.tls=true"
+        - "traefik.http.routers.whoami.tls.certresolver=leresolver"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"
+
+networks:
+  traefik-proxy:
+    external: true
+
+volumes:
+  data:
