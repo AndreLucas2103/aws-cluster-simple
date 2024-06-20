@@ -7,7 +7,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - traefik-proxy
+      - traefik_proxy
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "letsencrypt:/letsencrypt"
@@ -16,7 +16,7 @@ services:
       - "--providers.docker=true"
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=traefik-proxy"
+      - "--providers.docker.network=traefik_proxy"
 
       # portas e redirecionamento
       - "--entrypoints.web.address=:80"
@@ -62,5 +62,5 @@ volumes:
   letsencrypt:
 
 networks:
-  traefik-proxy:
+  traefik_proxy:
     external: true
