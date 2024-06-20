@@ -68,7 +68,7 @@ services:
       - traefik_proxy
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     command:
       - "-docker_only=true"
     ports:
